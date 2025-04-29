@@ -1,0 +1,6 @@
+# Bundler cache files
+.cache/
+
+# Generated
+CHANGELOG.md
+node_modules/

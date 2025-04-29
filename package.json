@@ -1,36 +1,105 @@
 {
-  "name": "hero-component-v0.1.0",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "swc src && next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@radix-ui/react-slot": "^1.0.2",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
-    "framer-motion": "^12.5.0",
-    "next": "^15.2.4",
-    "postcss": "^8.5.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@swc/cli": "^0.6.0",
-    "@swc/core": "^1.11.8",
-    "@tailwindcss/postcss": "^4.0.12",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.2.2",
-    "tailwindcss": "^4.0.12",
-    "typescript": "^5"
-  }
+    "name": "hero-component-v0.1.0",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "build": "swc src && next build",
+        "dev": "next dev",
+        "lint": "next lint --fix --dir pages --dir app --dir components --dir lib",
+        "prepare": "husky install",
+        "pretty": "prettier --write .",
+        "release": "release-it",
+        "start": "next start",
+        "test": "echo \"Warning: No tests specified\" && exit 0",
+        "type-check": "tsc --noEmit"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{json,css,md,mdx,html}": [
+            "prettier --write"
+        ],
+        "package.json": [
+            "sort-package-json"
+        ]
+    },
+    "dependencies": {
+        "@radix-ui/react-slot": "^1.0.2",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.0",
+        "framer-motion": "^12.5.0",
+        "next": "^15.2.4",
+        "postcss": "^8.5.3",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "tailwind-merge": "^3.0.2",
+        "tailwindcss-animate": "^1.0.7"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.8.0",
+        "@commitlint/config-conventional": "^19.8.0",
+        "@eslint/eslintrc": "^3",
+        "@release-it/conventional-changelog": "^10.0.1",
+        "@swc/cli": "^0.6.0",
+        "@swc/core": "^1.11.8",
+        "@tailwindcss/postcss": "^4.0.12",
+        "@types/node": "^20",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "15.2.2",
+        "eslint-plugin-jsx-a11y": "^6.10.2",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-security": "^3.0.1",
+        "eslint-plugin-sonarjs": "^3.0.2",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.5.1",
+        "prettier": "^3.5.3",
+        "release-it": "^19.0.1",
+        "sort-package-json": "^3.1.0",
+        "tailwindcss": "^4.0.12",
+        "typescript": "^5"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "release-it": {
+        "git": {
+            "commitMessage": "chore: release v${version}",
+            "tagName": "v${version}",
+            "requireBranch": [
+                "main",
+                "master"
+            ],
+            "requireCleanWorkingDir": true,
+            "pushRepo": "${repo.remote}"
+        },
+        "github": {
+            "release": true,
+            "web": true
+        },
+        "npm": {
+            "publish": false
+        },
+        "plugins": {
+            "@release-it/conventional-changelog": {
+                "preset": "angular",
+                "infile": "CHANGELOG.md",
+                "header": "# Changelog\n\nAll notable changes to this project will be documented in this file."
+            }
+        },
+        "hooks": {
+            "before:init": [
+                "npm run lint",
+                "npm run type-check",
+                "npm run test"
+            ],
+            "after:bump": "echo 'Version bumped to ${version}'",
+            "after:release": "echo Successfully released ${name} v${version} to GitHub."
+        },
+        "increment": "conventional:angular"
+    }
 }

@@ -79,6 +79,7 @@ Here's how to create a GitHub Personal Access Token (PAT) for releases:
 - Select "Personal access tokens" → "Tokens (classic)"
 - Click "Generate new token" → "Generate new token (classic)"
 - Give your token a descriptive name (e.g., "release-it automation")
+- Set an Expiration date (ex: 90 days)
 
 ### 4. Set Token Permissions
 

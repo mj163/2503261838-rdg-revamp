@@ -9,6 +9,97 @@ This document outlines the standard process for creating and publishing a new re
 - Node.js and npm installed
 - GitHub Personal Access Token (see [Creating a GitHub Token](#creating-a-github-token-for-releases))
 
+## Verifying Remote Repositories
+
+Before starting the release process, verify you're connected to the correct remote repository:
+
+### Check All Configured Remotes
+
+```bash
+git remote -v
+```
+
+This will show all configured remote repositories along with their URLs for both fetch and push operations. Example output:
+
+```
+origin https://github.com/username/repository.git (fetch)
+origin https://github.com/username/repository.git (push)
+```
+
+### Check Specific Remote Details
+
+For more detailed information about a specific remote (like "origin"):
+
+```bash
+git remote show origin
+```
+
+This will show:
+
+- The remote URL
+- The tracked branches
+- The local branches configured for 'git pull'
+- The local branches configured for 'git push'
+
+### Verify Remote Connection
+
+To check if you can actually connect to the remote repository:
+
+```bash
+git ls-remote --heads origin
+```
+
+This will list all the branches on the remote repository, verifying your connection and authentication.
+
+### Fix Remote URL (If Needed)
+
+If you need to update the remote repository URL:
+
+```bash
+git remote set-url origin https://github.com/username/repository.git
+```
+
+## Recommended Pre-Release Workflow
+
+### 1. Finish Work in Feature Branches
+
+- Complete all work for the release
+- Make sure tests pass on each branch
+- Have code reviewed if applicable
+
+### 2. Merge to Main Using Pull Requests
+
+- Create PR from feature branch to main
+- Review changes
+- Merge using GitHub's interface (preserves commit history)
+- Or locally:
+    ```bash
+    git checkout main && git merge feature-branch
+    ```
+
+### 3. Pull Latest Main
+
+```bash
+git checkout main
+git pull origin main
+```
+
+### 4. Run Pre-Release Tests
+
+```bash
+npm run lint
+npm run test
+npm run build
+```
+
+### 5. Then Run Your Release
+
+```bash
+npx release-it
+```
+
+**Important Note**: Ensure all feature branches with changes meant for the release have been merged into the main branch before proceeding. Release tools like release-it are typically configured to only run from main/master branches.
+
 ## Release Steps
 
 ### 1. Prepare Your Repository
@@ -37,14 +128,33 @@ npm run build               # Build the project
 npx release-it              # Guides through version selection and changelog
 ```
 
+### Performing a Dry Run
+
+Before creating an actual release, it's highly recommended to perform a dry run to validate the process:
+
+```bash
+# Dry run for interactive process
+npx release-it --dry-run
+
+# Dry run with specific version bump
+npx release-it minor --dry-run
+npx release-it major --dry-run
+npx release-it patch --dry-run
+```
+
+A dry run will:
+
+- Show which version would be used
+- Display the generated changelog
+- Show which Git commands would be executed
+- Indicate which GitHub API calls would be made
+- Preview npm publishing steps (if configured)
+
+This helps catch configuration issues, authentication problems, or unexpected version bumps before making any actual changes.
+
 ### Alternative Release Commands
 
 ```bash
-# Specific version bumps -- Dry Runs
-npx release-it minor --dry-run        # For a minor --dry-run release (0.1.0 → 0.2.0)
-npx release-it major --dry-run        # For a major --dry-run release (1.0.0 → 2.0.0)
-npx release-it patch --dry-run        # For a patch --dry-run release (1.0.1 → 1.0.2)
-
 # Specific version bumps
 npx release-it minor        # For a minor release (0.1.0 → 0.2.0)
 npx release-it major        # For a major release (1.0.0 → 2.0.0)
@@ -84,7 +194,6 @@ Here's how to create a GitHub Personal Access Token (PAT) for releases:
 - Select "Personal access tokens" → "Tokens (classic)"
 - Click "Generate new token" → "Generate new token (classic)"
 - Give your token a descriptive name (e.g., "release-it automation")
-- Set an Expiration date (ex: 90 days)
 
 ### 4. Set Token Permissions
 

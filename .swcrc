@@ -3,22 +3,29 @@
   "jsc": {
     "parser": {
       "syntax": "typescript",
-      "tsx": false,
+      "tsx": true,
       "dynamicImport": true,
       "decorators": false
     },
-    "transform": null,
-    "target": "es2016",
+    "transform": {
+      "react": {
+        "runtime": "automatic",
+        "development": false,
+        "refresh": true
+      }
+    },
+    "target": "es2020",
     "loose": false,
     "externalHelpers": false,
-    "keepClassNames": false
+    "keepClassNames": true
   },
   "module": {
-    "type": "commonjs",
-    "strict": false,
-    "strictMode": false,
+    "type": "es6",
+    "strict": true,
+    "strictMode": true,
     "noInterop": false,
     "lazy": false
   },
-  "minify": true
+  "minify": true,
+  "sourceMaps": true
 }

@@ -1,0 +1,167 @@
+# Commit Workflow & Changelog Automation
+
+## 📝 Automatically Generating a CHANGELOG.md
+
+1. **Install Required Packages:**
+    ```sh
+    npm install --save-dev husky
+    npm install --save-dev release-it @release-it/conventional-changelog
+    ```
+2. **Configure Husky:**
+
+```bash
+npm husky init
+```
+
+3. **Configure release-it:**
+    - Add to your package.json scripts:
+        ```json
+        "release": "release-it"
+        ```
+    - Create a .release-it.json file:
+        ```json
+        {
+            "plugins": {
+                "@release-it/conventional-changelog": {
+                    "preset": "conventionalcommits",
+                    "infile": "CHANGELOG.md"
+                }
+            },
+            "git": {
+                "commit": true,
+                "commitMessage": "chore(release): v${version}",
+                "tagName": "v${version}",
+                "requireCleanWorkingDir": false,
+                "requireUpstream": false
+            },
+            "npm": {
+                "publish": false
+            },
+            "hooks": {
+                "before:init": ["npm run lint"]
+            }
+        }
+        ```
+    - Use **Conventional Commit messages** (e.g., `feat:`, `fix:`, `chore:`) for best results.
+    - Run `npm run release` to update `CHANGELOG.md` automatically.
+
+---
+
+## 🔑 Ensuring a Proper SSH Key for GitHub
+
+1. **Check for Existing SSH Keys:**
+
+    ```sh
+    ls -al ~/.ssh
+    ```
+
+    Look for `id_ed25519` and `id_ed25519.pub`.
+
+2. **Generate a New Key (if needed):**
+
+    ```sh
+    ssh-keygen -t ed25519 -C "your_email@example.com"
+    ```
+
+    Press Enter to accept defaults.
+
+3. **Add Key to SSH Agent:**
+
+    ```sh
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_ed25519
+    ```
+
+4. **Add Public Key to GitHub:**
+
+    - Copy key:
+        ```sh
+        pbcopy < ~/.ssh/id_ed25519.pub
+        ```
+    - Go to [GitHub SSH keys settings](https://github.com/settings/keys), click **New SSH key**, paste, and save.
+
+5. **Set Remote to Use SSH:**
+
+    ```sh
+    git remote set-url origin git@github.com:YOUR_USERNAME/YOUR_REPO.git
+    ```
+
+6. **Test Connection:**
+    ```sh
+    ssh -T git@github.com
+    ```
+    Should see:  
+    `Hi YOUR_USERNAME! You've successfully authenticated, but GitHub does not provide shell access.`
+
+---
+
+## ✅ Submitting a Proper Commit (Conventional Commits)
+
+To ensure your commits are automatically included in the generated `CHANGELOG.md`, always use the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+### Commit Message Structure
+
+```
+type(scope?): description
+```
+
+- **type**: The kind of change (`feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, etc.)
+- **scope** (optional): The section of the codebase affected (e.g., `auth`, `api`, `ui`)
+- **description**: Short summary of the change
+
+### Examples
+
+- `feat: add user authentication`
+- `fix(ui): correct button alignment`
+- `docs: update README with setup instructions`
+- `chore: update dependencies`
+
+### Step-by-Step Process
+
+1. **Stage your changes:**
+    ```sh
+    git add .
+    ```
+2. **Commit using the Conventional Commits format:**
+    ```sh
+    git commit -m "feat: add dark mode toggle"
+    ```
+3. **Push your commit:**
+    ```sh
+    git push
+    ```
+4. **Run release-it to update the changelog:**
+    ```sh
+    npm run release
+    ```
+
+### Result
+
+Your commit message will appear under the appropriate section in `CHANGELOG.md` after running `release-it`.
+
+**Tip:**
+
+- Use clear, concise descriptions for maximum clarity in your changelog.
+- Only commits that follow the conventional format will be included in the changelog.
+
+---
+
+## 📦 Packages and JSON Configuration Needed
+
+- **Packages:**
+
+    - `release-it`
+    - `@release-it/conventional-changelog`
+    - (Optional for linting/formatting: `eslint`, `prettier`, `lint-staged`, `husky`, etc.)
+
+- **Key JSON Config Files:**
+    - `.release-it.json` (see above)
+    - `package.json` scripts:
+        ```json
+        "scripts": {
+          "release": "release-it"
+        }
+        ```
+    - (Optionally) `.lintstagedrc.json`, `.eslintrc`, `.prettierrc` for code quality
+
+---

@@ -1,0 +1,20 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run type checking
+echo "🔍 Checking TypeScript types..."
+npx tsc --noEmit
+
+# Run linting
+echo "🧹 Running linter..."
+npm run lint
+
+# Remove all .DS_Store files and empty directories (excluding .git and .husky)
+echo "🧹 Cleaning up .DS_Store files..."
+if command -v fd &> /dev/null
+then
+    fd -H '^\.DS_Store$' -tf -E .git -E .husky -X rm || true
+    fd -te -td -E .git -E .husky -X rmdir || true
+fi
+
+echo "✅ Pre-push checks completed successfully!"

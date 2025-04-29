@@ -40,6 +40,11 @@ npx release-it              # Guides through version selection and changelog
 ### Alternative Release Commands
 
 ```bash
+# Specific version bumps -- Dry Runs
+npx release-it minor --dry-run        # For a minor --dry-run release (0.1.0 → 0.2.0)
+npx release-it major --dry-run        # For a major --dry-run release (1.0.0 → 2.0.0)
+npx release-it patch --dry-run        # For a patch --dry-run release (1.0.1 → 1.0.2)
+
 # Specific version bumps
 npx release-it minor        # For a minor release (0.1.0 → 0.2.0)
 npx release-it major        # For a major release (1.0.0 → 2.0.0)
